@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LITTLESEED PLANTS - Interactive Wireframe Prototype</title>
+  
+  <!-- Font Google: Plus Jakarta Sans & Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN SYSTEM & CSS TOKENS
+       ========================================================================== */
+    :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Space Mono', 'Courier New', Courier, monospace;
+      
+      --bg-page: #f4f3ee;
+      --bg-device: #ffffff;
+      --text-main: #111111;
+      --text-muted: #555555;
+      --border-dark: #111111;
+      --border-light: #d1d5db;
+      --border-dashed: #777777;
+      --tag-active: #e2e8e0;
+      --shadow-device: 0 18px 45px rgba(0, 0, 0, 0.14);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 50px;
+    }
+
+    /* ==========================================================================
+       2. TOP BAR CONTROLLER (PREVIEW SWITCHER)
+       ========================================================================== */
+    .preview-header {
+      text-align: center;
+      margin-bottom: 20px;
+      max-width: 600px;
+    }
+
+    .preview-title {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 12px;
+    }
+
+    .screen-switcher-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .screen-switch-btn {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 7px 13px;
+      background: #ffffff;
+      border: 1.5px solid var(--border-dark);
+      color: var(--text-main);
+      cursor: pointer;
+      font-weight: 700;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .screen-switch-btn:hover {
+      background: #eaeaea;
+    }
+
+    .screen-switch-btn.active {
+      background: var(--text-main);
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       3. DEVICE MOCKUP CONTAINER
+       ========================================================================== */
+    .device-container {
+      width: 100%;
+      max-width: 395px;
+      background-color: var(--bg-device);
+      border: 2px solid var(--border-dark);
+      border-radius: 14px;
+      box-shadow: var(--shadow-device);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 760px;
+      overflow: hidden;
+    }
+
+    /* Screen View Transition */
+    .screen-view {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      padding-bottom: 74px; /* Ruang untuk bottom nav */
+      animation: fadeIn 0.22s ease-in-out;
+    }
+
+    .screen-view.active-screen {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       4. WIREFRAME COMMON STYLES
+       ========================================================================== */
+    .wire-header {
+      padding: 16px 18px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid var(--border-dark);
+      background: #ffffff;
+    }
+
+    .wire-header-title {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.2px;
+    }
+
+    .wire-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      border: 1.5px solid var(--border-dark);
+      padding: 2px 8px;
+      text-align: center;
+      font-weight: 700;
+      line-height: 1.2;
+      background: #ffffff;
+    }
+
+    .wire-badge-stacked {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wire-icon-btn {
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid var(--border-dark);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: background 0.15s ease;
+    }
+
+    .wire-icon-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .wire-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    /* Kotak Placeholder Gambar Khas Wireframe (Silang Diagonal X Otomatis) */
+    .wire-image-box {
+      width: 100%;
+      border: 1.5px solid var(--border-dark);
+      background: #ffffff;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .wire-image-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to top right, transparent calc(50% - 0.75px), #b5b5b5 calc(50% - 0.75px), #b5b5b5 calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+        linear-gradient(to bottom right, transparent calc(50% - 0.75px), #b5b5b5 calc(50% - 0.75px), #b5b5b5 calc(50% + 0.75px), transparent calc(50% + 0.75px));
+      pointer-events: none;
+    }
+
+    .wire-image-tag {
+      position: relative;
+      z-index: 2;
+      background: #ffffff;
+      border: 1.2px solid var(--border-dark);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      text-align: center;
+    }
+
+    /* Tombol Utama (CTA Hitam Solid) */
+    .wire-btn-cta {
+      width: 100%;
+      background: var(--border-dark);
+      color: #ffffff;
+      border: 1.5px solid var(--border-dark);
+      padding: 13px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+      text-decoration: none;
+      margin-top: auto;
+    }
+
+    .wire-btn-cta:hover {
+      opacity: 0.92;
+    }
+
+    .wire-btn-cta:active {
+      transform: scale(0.99);
+    }
+
+    /* Tombol Pilihan Opsi */
+    .wire-option-btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 10px 6px;
+      background: #ffffff;
+      color: var(--text-main);
+      border: 1.5px solid var(--border-dark);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+    }
+
+    .wire-option-btn:hover {
+      background: #f7f7f7;
+    }
+
+    .wire-option-btn.selected {
+      background: var(--border-dark);
+      color: #ffffff;
+    }
+
+    /* Garis Pembatas */
+    .wire-divider {
+      height: 1.5px;
+      background: var(--border-dark);
+      width: 100%;
+      border: none;
+    }
+
+    .wire-divider-dotted {
+      border: none;
+      border-top: 1.5px dashed var(--border-dashed);
+      height: 1px;
+      width: 100%;
+    }
+
+    /* ==========================================================================
+       5. LAYAR 1: KUIS KONDISI RUMAH
+       ========================================================================== */
+    .quiz-info-card {
+      border: 1.5px dashed var(--border-dashed);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quiz-step-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .quiz-main-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .quiz-description {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .quiz-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .quiz-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .quiz-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       6. LAYAR 2: 2. KATALOG TANAMAN
+       ========================================================================== */
+    .catalog-brand {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .catalog-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .search-box {
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border-dark);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .search-input:focus {
+      background: #fafafa;
+    }
+
+    .filter-tags-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .filter-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 6px 14px;
+      border: 1.5px solid #888888;
+      background: #ffffff;
+      color: var(--text-main);
+      cursor: pointer;
+      white-space: nowrap;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .filter-tag.active {
+      background: var(--tag-active);
+      border-color: var(--border-dark);
+      font-weight: 700;
+    }
+
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .catalog-card {
+      border: 1.5px solid #aaaaaa;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      background: #ffffff;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .catalog-card:hover {
+      border-color: var(--border-dark);
+      transform: translateY(-2px);
+    }
+
+    .catalog-card .wire-image-box {
+      height: 120px;
+    }
+
+    .catalog-card-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .catalog-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #eeeeee;
+      padding-top: 6px;
+    }
+
+    .catalog-card-score {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .catalog-card-btn {
+      width: 26px;
+      height: 26px;
+      border: 1.2px solid var(--border-dark);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .catalog-card-btn:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       7. LAYAR 3: FILTER RUANGAN
+       ========================================================================== */
+    .location-filter-header {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-transform: uppercase;
+    }
+
+    .location-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .location-tab-btn {
+      padding: 8px 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: #ffffff;
+      border: 1.5px solid var(--border-dark);
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .location-tab-btn.selected {
+      background: var(--border-dark);
+      color: #ffffff;
+    }
+
+    .selection-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1.5px solid var(--border-dark);
+      padding-bottom: 6px;
+      margin-top: 4px;
+    }
+
+    .selection-info-title {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .selection-info-count {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .room-plant-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .room-plant-card {
+      border: 1.5px solid var(--border-dark);
+      padding: 10px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #ffffff;
+    }
+
+    .room-plant-img {
+      width: 76px;
+      height: 76px;
+      flex-shrink: 0;
+    }
+
+    .room-plant-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .room-plant-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .room-plant-tags {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .room-plant-divider {
+      height: 1px;
+      background: #222222;
+      margin: 3px 0;
+    }
+
+    .room-plant-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .room-plant-price {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    .room-plant-select-btn {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      background: #ffffff;
+      border: 1.2px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .room-plant-select-btn:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       8. LAYAR 4: MODE TAMPILAN
+       ========================================================================== */
+    .top-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px 8px;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .brand-with-icon {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-text-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-main {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .top-icons-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .icon-btn-ghost {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+    }
+
+    .icon-btn-ghost svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .mode-sec-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .mode-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .mode-desc {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .mode-toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .specimen-card-box {
+      border: 1.5px solid var(--border-dark);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #ffffff;
+    }
+
+    .specimen-img-large {
+      width: 100%;
+      height: 130px;
+    }
+
+    .specimen-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .specimen-name-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .specimen-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .specimen-latin {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .specimen-badge-match {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      border: 1.2px solid var(--border-dark);
+      padding: 3px 6px;
+    }
+
+    .specimen-attribute-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .specimen-attr-row {
+      border: 1.2px solid var(--border-dark);
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .specimen-attr-key {
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .specimen-attr-val {
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       9. LAYAR 5: PANDUAN PERAWATAN
+       ========================================================================== */
+    .guide-main-img {
+      width: 100%;
+      height: 220px;
+    }
+
+    .guide-plant-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .guide-name-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .guide-plant-name {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .guide-plant-price {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .guide-plant-category {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .guide-difficulty-box {
+      border: 1.5px solid var(--border-dark);
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .difficulty-val {
+      font-weight: 800;
+    }
+
+    .guide-checklist-box {
+      border: 1.5px solid var(--border-dark);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #ffffff;
+    }
+
+    .checklist-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-main);
+      line-height: 1.35;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checklist-checkbox {
+      width: 14px;
+      height: 14px;
+      border: 1.2px solid var(--border-dark);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      background: #ffffff;
+      transition: background 0.1s ease;
+    }
+
+    .checklist-checkbox.checked::after {
+      content: '✓';
+      font-weight: 800;
+    }
+
+    /* Toast Notification */
+    .toast-msg {
+      position: fixed;
+      bottom: 84px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #111111;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 8px 16px;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ==========================================================================
+       10. BOTTOM NAVIGATION BAR (STANDAR 5 TABS)
+       ========================================================================== */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: #ffffff;
+      border-top: 1.5px solid var(--border-dark);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 10;
+    }
+
+    .nav-tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      padding: 4px;
+      position: relative;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+
+    .nav-tab-item:hover {
+      background: #f8f8f8;
+    }
+
+    .nav-tab-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-tab-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-main);
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    .nav-tab-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Active Indicator */
+    .nav-tab-item.active {
+      font-weight: 800;
+    }
+
+    .nav-tab-item.active::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 12%;
+      right: 12%;
+      height: 3px;
+      background: var(--border-dark);
+    }
+
+    /* Responsif Mobile Asli */
+    @media (max-width: 480px) {
+      body {
+        padding: 8px 0;
+        background-color: #ffffff;
+      }
+      .preview-header {
+        padding: 0 14px;
+      }
+      .device-container {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        max-width: 100%;
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Controller / Switcher Cepat -->
+  <header class="preview-header">
+    <h1 class="preview-title">[WIREFRAME PROTOTYPE] LITTLESEED PLANTS</h1>
+    
+    <nav class="screen-switcher-bar" aria-label="Pengalih Layar">
+      <button type="button" class="screen-switch-btn active" data-target="screen-kuis">1. Kuis Kondisi</button>
+      <button type="button" class="screen-switch-btn" data-target="screen-katalog">2. Katalog</button>
+      <button type="button" class="screen-switch-btn" data-target="screen-ruang">3. Filter Ruangan</button>
+      <button type="button" class="screen-switch-btn" data-target="screen-mode">4. Mode Tampilan</button>
+      <button type="button" class="screen-switch-btn" data-target="screen-panduan">5. Panduan Perawatan</button>
+    </nav>
+  </header>
+
+  <!-- Mobile Device Mockup Frame -->
+  <main class="device-container" id="deviceContainer">
+
+    <!-- ======================================================================
+         LAYAR 1: KUIS KONDISI RUMAH
+         ====================================================================== -->
+    <section class="screen-view active-screen" id="screen-kuis">
+      <!-- Header -->
+      <div class="wire-header">
+        <span class="wire-header-title">[WIREFRAME] KUIS KONDISI RUMAH</span>
+        <div class="wire-badge wire-badge-stacked">
+          <span>STEP</span>
+          <span>1/3</span>
+        </div>
+      </div>
+
+      <div class="wire-body">
+        <!-- Dashed Box -->
+        <div class="quiz-info-card">
+          <span class="quiz-step-tag">LANGKAH 1 DARI 3</span>
+          <h2 class="quiz-main-title">KUIS KONDISI RUMAH</h2>
+          <p class="quiz-description">Pilih filter kondisi untuk rekomendasi tanaman.</p>
+        </div>
+
+        <!-- [1] CAHAYA -->
+        <div class="quiz-section">
+          <div class="quiz-label">[1] CAHAYA</div>
+          <div class="quiz-grid-3" data-group="cahaya">
+            <button type="button" class="wire-option-btn selected">TERANG</button>
+            <button type="button" class="wire-option-btn">SEDANG</button>
+            <button type="button" class="wire-option-btn">TEDUH</button>
+          </div>
+        </div>
+
+        <!-- [2] AREA RUANG -->
+        <div class="quiz-section">
+          <div class="quiz-label">[2] AREA RUANG</div>
+          <div class="quiz-grid-3" data-group="ruang">
+            <button type="button" class="wire-option-btn selected">MEJA KERJA</button>
+            <button type="button" class="wire-option-btn">KAMAR MANDI</button>
+            <button type="button" class="wire-option-btn">BALKON</button>
+          </div>
+        </div>
+
+        <!-- [3] HEWAN PELIHARAAN -->
+        <div class="quiz-section">
+          <div class="quiz-label">[3] HEWAN PELIHARAAN</div>
+          <div class="quiz-grid-2" data-group="hewan">
+            <button type="button" class="wire-option-btn selected">ADA HEWAN</button>
+            <button type="button" class="wire-option-btn">TANPA HEWAN</button>
+          </div>
+        </div>
+
+        <!-- Tombol CTA -->
+        <button type="button" class="wire-btn-cta" id="btnCariTanaman">
+          CARI TANAMAN &gt;
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         LAYAR 2: 2. KATALOG TANAMAN
+         ====================================================================== -->
+    <section class="screen-view" id="screen-katalog">
+      <!-- Header -->
+      <div class="wire-header">
+        <div>
+          <div class="catalog-brand">LITTLESEED PLANTS</div>
+          <h2 class="catalog-title">2. Katalog Tanaman</h2>
+        </div>
+        <button type="button" class="wire-icon-btn" title="View Options">[o]</button>
+      </div>
+
+      <div class="wire-body">
+        <!-- Search Bar -->
+        <div class="search-box">
+          <input type="text" class="search-input" id="catalogSearch" placeholder="Search..." aria-label="Cari tanaman">
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-tags-scroll">
+          <button type="button" class="filter-tag active" data-filter="all">Semua</button>
+          <button type="button" class="filter-tag" data-filter="pet">Ramah Hewan</button>
+          <button type="button" class="filter-tag" data-filter="light">Minim Cahaya</button>
+        </div>
+
+        <!-- 2x2 Plant Grid -->
+        <div class="catalog-grid" id="catalogGrid">
+          <!-- Card 1: Monstera -->
+          <article class="catalog-card" data-name="Monstera" data-score="98%">
+            <div class="wire-image-box">
+              <span class="wire-image-tag">[X]</span>
+            </div>
+            <h3 class="catalog-card-name">Monstera</h3>
+            <div class="catalog-card-footer">
+              <span class="catalog-card-score">Skor 98%</span>
+              <button type="button" class="catalog-card-btn" aria-label="Tambah Monstera">+</button>
+            </div>
+          </article>
+
+          <!-- Card 2: Sansevieria -->
+          <article class="catalog-card" data-name="Sansevieria" data-score="95%">
+            <div class="wire-image-box">
+              <span class="wire-image-tag">[X]</span>
+            </div>
+            <h3 class="catalog-card-name">Sansevieria</h3>
+            <div class="catalog-card-footer">
+              <span class="catalog-card-score">Skor 95%</span>
+              <button type="button" class="catalog-card-btn" aria-label="Tambah Sansevieria">+</button>
+            </div>
+          </article>
+
+          <!-- Card 3: Calathea -->
+          <article class="catalog-card" data-name="Calathea" data-score="92%">
+            <div class="wire-image-box">
+              <span class="wire-image-tag">[X]</span>
+            </div>
+            <h3 class="catalog-card-name">Calathea</h3>
+            <div class="catalog-card-footer">
+              <span class="catalog-card-score">Skor 92%</span>
+              <button type="button" class="catalog-card-btn" aria-label="Tambah Calathea">+</button>
+            </div>
+          </article>
+
+          <!-- Card 4: Peperomia -->
+          <article class="catalog-card" data-name="Peperomia" data-score="89%">
+            <div class="wire-image-box">
+              <span class="wire-image-tag">[X]</span>
+            </div>
+            <h3 class="catalog-card-name">Peperomia</h3>
+            <div class="catalog-card-footer">
+              <span class="catalog-card-score">Skor 89%</span>
+              <button type="button" class="catalog-card-btn" aria-label="Tambah Peperomia">+</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         LAYAR 3: FILTER RUANGAN
+         ====================================================================== -->
+    <section class="screen-view" id="screen-ruang">
+      <!-- Header -->
+      <div class="wire-header">
+        <span class="wire-header-title">[ FILTER RUANGAN ]</span>
+        <button type="button" class="wire-icon-btn" title="User Profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <div class="wire-body">
+        <!-- Location Tabs -->
+        <div>
+          <div class="location-filter-header">LOKASI PENEMPATAN</div>
+          <div class="location-tabs" style="margin-top: 8px;">
+            <button type="button" class="location-tab-btn selected">[ Meja Kerja ]</button>
+            <button type="button" class="location-tab-btn">[ Balkon ]</button>
+            <button type="button" class="location-tab-btn">[ Kamar Mandi ]</button>
+          </div>
+        </div>
+
+        <!-- Section Title & Item Count -->
+        <div class="selection-info-bar">
+          <span class="selection-info-title">PILIHAN: MEJA KERJA</span>
+          <span class="selection-info-count">(3 ITEM)</span>
+        </div>
+
+        <!-- List Tanaman -->
+        <div class="room-plant-list">
+          <!-- Item 1 -->
+          <article class="room-plant-card">
+            <div class="wire-image-box room-plant-img">
+              <span class="wire-image-tag">[X]</span>
+            </div>
+            <div class="room-plant-info">
+              <h3 class="room-plant-name">Peperomia Polybotrya</h3>
+              <div class="room-plant-tags">Tahan AC &bull; 15-20cm</div>
+              <div class="room-plant-divider"></div>
+              <div class="room-plant-bottom">
+                <span class="room-plant-price">Rp 48.000</span>
+                <button type="button" class="room-plant-select-btn">[ PILIH ]</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Item 2 -->
+          <article class="room-plant-card">
+            <div class="wire-image-box room-plant-img">
+              <span class="wire-image-tag">[X]</span>
+            </div>
+            <div class="room-plant-info">
+              <h3 class="room-plant-name">Sansevieria Trifasciata</h3>
+              <div class="room-plant-tags">Minim Cahaya &bull; Anti-Radiasi</div>
+              <div class="room-plant-divider"></div>
+              <div class="room-plant-bottom">
+                <span class="room-plant-price">Rp 65.000</span>
+                <button type="button" class="room-plant-select-btn">[ PILIH ]</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Item 3 -->
+          <article class="room-plant-card">
+            <div class="wire-image-box room-plant-img">
+              <span class="wire-image-tag">[X]</span>
+            </div>
+            <div class="room-plant-info">
+              <h3 class="room-plant-name">Zamioculcas Zamiifolia</h3>
+              <div class="room-plant-tags">Sangat Tangguh &bull; Hemat Air</div>
+              <div class="room-plant-divider"></div>
+              <div class="room-plant-bottom">
+                <span class="room-plant-price">Rp 55.000</span>
+                <button type="button" class="room-plant-select-btn">[ PILIH ]</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         LAYAR 4: MODE TAMPILAN
+         ====================================================================== -->
+    <section class="screen-view" id="screen-mode">
+      <!-- Top Action Bar -->
+      <div class="top-action-bar">
+        <div class="brand-with-icon">
+          <!-- Seedling Icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22v-9"></path>
+            <path d="M12 13c-4.5 0-7-3-7-7 4 0 7 2.5 7 7z"></path>
+            <path d="M12 9c4 0 6.5-2.5 6.5-6-3.5 0-6.5 2-6.5 6z"></path>
+          </svg>
+          <div class="brand-text-wrap">
+            <span class="brand-main">LITTLESEED PLANTS</span>
+            <span class="brand-sub">Mode</span>
+          </div>
+        </div>
+
+        <div class="top-icons-group">
+          <button type="button" class="icon-btn-ghost" title="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <button type="button" class="icon-btn-ghost" title="Notifikasi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </button>
+          <button type="button" class="icon-btn-ghost" title="Keranjang">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          </button>
+          <button type="button" class="icon-btn-ghost" title="Profil">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="wire-body">
+        <!-- Mode Title & Sub -->
+        <div>
+          <div class="mode-sec-tag">[WIREFRAME // SEC.04]</div>
+          <h2 class="mode-title">MODE TAMPILAN</h2>
+          <p class="mode-desc">Pilih kedalaman informasi perawatan tanaman.</p>
+        </div>
+
+        <div class="wire-divider"></div>
+
+        <!-- Mode Toggle Buttons -->
+        <div class="mode-toggle-group">
+          <button type="button" class="wire-option-btn selected" id="btnModePemula">[ MODE PEMULA ]</button>
+          <button type="button" class="wire-option-btn" id="btnModeKolektor">[ MODE KOLEKTOR ]</button>
+        </div>
+
+        <!-- Specimen Card Box -->
+        <div class="specimen-card-box">
+          <div class="wire-image-box specimen-img-large">
+            <span class="wire-image-tag">[X] FOTO SPESIMEN</span>
+          </div>
+
+          <div class="specimen-header-row">
+            <div class="specimen-name-wrap">
+              <div class="specimen-title">NAMA SPESIMEN</div>
+              <div class="specimen-latin">Sansevieria trifasciata</div>
+            </div>
+            <div class="specimen-badge-match">[ 96% COCOK ]</div>
+          </div>
+
+          <div class="wire-divider-dotted"></div>
+
+          <!-- Specimen Detail Specs -->
+          <div class="specimen-attribute-list">
+            <div class="specimen-attr-row">
+              <span class="specimen-attr-key">PENYIRAMAN</span>
+              <span class="specimen-attr-val" id="valPenyiraman">2-3 minggu sekali</span>
+            </div>
+            <div class="specimen-attr-row">
+              <span class="specimen-attr-key">CAHAYA</span>
+              <span class="specimen-attr-val" id="valCahaya">Teduh / Terang</span>
+            </div>
+            <div class="specimen-attr-row">
+              <span class="specimen-attr-key">HEWAN</span>
+              <span class="specimen-attr-val" id="valHewan">Jauhkan dari anabul</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <button type="button" class="wire-btn-cta" id="btnSimpanMode">
+          [ SIMPAN MODE ]
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         LAYAR 5: PANDUAN PERAWATAN
+         ====================================================================== -->
+    <section class="screen-view" id="screen-panduan">
+      <!-- Header -->
+      <div class="wire-header">
+        <span class="wire-header-title">PANDUAN PERAWATAN</span>
+        <span class="wire-badge">INFO</span>
+      </div>
+
+      <div class="wire-body">
+        <!-- Large Photo Placeholder -->
+        <div class="wire-image-box guide-main-img">
+          <span class="wire-image-tag">[ FOTO TANAMAN ]</span>
+        </div>
+
+        <!-- Plant Meta Details -->
+        <div class="guide-plant-meta">
+          <div class="guide-name-price-row">
+            <h2 class="guide-plant-name" id="guidePlantName">SANSEVIERIA</h2>
+            <span class="guide-plant-price">Rp 65.000</span>
+          </div>
+          <div class="guide-plant-category">Spesimen Tanaman Hias</div>
+        </div>
+
+        <div class="wire-divider"></div>
+
+        <!-- Difficulty Box -->
+        <div class="guide-difficulty-box">
+          <span>Tingkat Kesulitan:</span>
+          <span class="difficulty-val">MUDAH</span>
+        </div>
+
+        <!-- Checklist Pra-Beli -->
+        <div class="guide-checklist-box">
+          <div class="checklist-title">[ ] CHECKLIST PRA-BELI</div>
+          <div class="checklist-items">
+            <label class="checklist-item">
+              <span class="checklist-checkbox checked"></span>
+              <span>Waktu rawat hanya ~5 menit per minggu</span>
+            </label>
+            <label class="checklist-item">
+              <span class="checklist-checkbox checked"></span>
+              <span>Tahan jika lupa disiram</span>
+            </label>
+            <label class="checklist-item">
+              <span class="checklist-checkbox checked"></span>
+              <span>Tahan ruangan ber-AC &amp; minim cahaya</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <button type="button" class="wire-btn-cta" id="btnBeliSekarang">
+          [ BELI SEKARANG ]
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         BOTTOM NAVIGATION BAR (STANDAR 5 TABS)
+         ====================================================================== -->
+    <nav class="bottom-nav" aria-label="Navigasi Utama">
+      <!-- 1. Kuis -->
+      <button type="button" class="nav-tab-item active" data-screen="screen-kuis">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+            <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+            <path d="M10 11h.01"></path>
+            <path d="M14 11h.01"></path>
+            <path d="M10 15h4"></path>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Kuis</span>
+      </button>
+
+      <!-- 2. Katalog -->
+      <button type="button" class="nav-tab-item" data-screen="screen-katalog">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M11 20A7 7 0 0 1 4 13a7 7 0 0 1 7-7c4 0 8 3 8 7 0 4-3 7-8 7z"></path>
+            <path d="M11 20v-7"></path>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Katalog</span>
+      </button>
+
+      <!-- 3. Ruang -->
+      <button type="button" class="nav-tab-item" data-screen="screen-ruang">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Ruang</span>
+      </button>
+
+      <!-- 4. Mode -->
+      <button type="button" class="nav-tab-item" data-screen="screen-mode">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Mode</span>
+      </button>
+
+      <!-- 5. Panduan -->
+      <button type="button" class="nav-tab-item" data-screen="screen-panduan">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Panduan</span>
+      </button>
+    </nav>
+  </main>
+
+  <!-- Toast Notification Pop-up -->
+  <div class="toast-msg" id="toastMsg">Mode tampilan disimpan!</div>
+
+  <!-- ======================================================================
+       JAVASCRIPT LOGIC INTERAKTIF
+       ====================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const topSwitcherBtns = document.querySelectorAll('.screen-switch-btn');
+      const bottomNavBtns = document.querySelectorAll('.nav-tab-item');
+      const screens = document.querySelectorAll('.screen-view');
+      const toast = document.getElementById('toastMsg');
+
+      function showToast(text) {
+        if (!toast) return;
+        toast.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      }
+
+      // Fungsi Pengalih Layar
+      function showScreen(targetId) {
+        screens.forEach(screen => screen.classList.remove('active-screen'));
+        const target = document.getElementById(targetId);
+        if (target) target.classList.add('active-screen');
+
+        topSwitcherBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-target') === targetId);
+        });
+
+        bottomNavBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-screen') === targetId);
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Event Listener Tombol Atas
+      topSwitcherBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          showScreen(btn.getAttribute('data-target'));
+        });
+      });
+
+      // Event Listener Bottom Navigation
+      bottomNavBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          showScreen(btn.getAttribute('data-screen'));
+        });
+      });
+
+      // Layar 1: Kuis Opsi Toggle
+      document.querySelectorAll('[data-group]').forEach(group => {
+        const buttons = group.querySelectorAll('.wire-option-btn');
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+          });
+        });
+      });
+
+      const btnCariTanaman = document.getElementById('btnCariTanaman');
+      if (btnCariTanaman) {
+        btnCariTanaman.addEventListener('click', () => {
+          showScreen('screen-katalog');
+        });
+      }
+
+      // Layar 2: Katalog Filter & Search
+      const filterTags = document.querySelectorAll('.filter-tag');
+      filterTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+          filterTags.forEach(t => t.classList.remove('active'));
+          tag.classList.add('active');
+        });
+      });
+
+      const catalogCards = document.querySelectorAll('.catalog-card');
+      catalogCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.classList.contains('catalog-card-btn')) {
+            e.stopPropagation();
+            const isAdded = e.target.textContent === '✓';
+            e.target.textContent = isAdded ? '+' : '✓';
+            showToast(isAdded ? 'Dihapus dari pilihan' : 'Ditambahkan ke pilihan!');
+            return;
+          }
+          const plantName = card.getAttribute('data-name');
+          const guideTitle = document.getElementById('guidePlantName');
+          if (guideTitle && plantName) guideTitle.textContent = plantName.toUpperCase();
+          showScreen('screen-panduan');
+        });
+      });
+
+      // Layar 3: Filter Ruangan Tabs & Pilih
+      const locationTabs = document.querySelectorAll('.location-tab-btn');
+      const selectionTitle = document.querySelector('.selection-info-title');
+      locationTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          locationTabs.forEach(t => t.classList.remove('selected'));
+          tab.classList.add('selected');
+          const cleanText = tab.textContent.replace(/[\[\]]/g, '').trim().toUpperCase();
+          if (selectionTitle) selectionTitle.textContent = `PILIHAN: ${cleanText}`;
+        });
+      });
+
+      document.querySelectorAll('.room-plant-select-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.textContent === '[ PILIH ]') {
+            btn.textContent = '[ DIPILIH ✓ ]';
+            btn.style.background = '#000000';
+            btn.style.color = '#ffffff';
+            showToast('Tanaman telah dipilih!');
+          } else {
+            btn.textContent = '[ PILIH ]';
+            btn.style.background = '#ffffff';
+            btn.style.color = '#111111';
+          }
+        });
+      });
+
+      // Layar 4: Mode Pemula vs Kolektor
+      const btnModePemula = document.getElementById('btnModePemula');
+      const btnModeKolektor = document.getElementById('btnModeKolektor');
+      const valPenyiraman = document.getElementById('valPenyiraman');
+      const valCahaya = document.getElementById('valCahaya');
+      const valHewan = document.getElementById('valHewan');
+
+      if (btnModePemula && btnModeKolektor) {
+        btnModePemula.addEventListener('click', () => {
+          btnModePemula.classList.add('selected');
+          btnModeKolektor.classList.remove('selected');
+          if (valPenyiraman) valPenyiraman.textContent = '2-3 minggu sekali';
+          if (valCahaya) valCahaya.textContent = 'Teduh / Terang';
+          if (valHewan) valHewan.textContent = 'Jauhkan dari anabul';
+        });
+
+        btnModeKolektor.addEventListener('click', () => {
+          btnModeKolektor.classList.add('selected');
+          btnModePemula.classList.remove('selected');
+          if (valPenyiraman) valPenyiraman.textContent = 'Moisture Meter < 15%';
+          if (valCahaya) valCahaya.textContent = 'Indirect 800-1500 Lux';
+          if (valHewan) valHewan.textContent = 'Saponin Toxic (Level 2)';
+        });
+      }
+
+      const btnSimpanMode = document.getElementById('btnSimpanMode');
+      if (btnSimpanMode) {
+        btnSimpanMode.addEventListener('click', () => {
+          showToast('Mode tampilan berhasil disimpan!');
+        });
+      }
+
+      // Layar 5: Checklist Pra-Beli & Beli Sekarang
+      document.querySelectorAll('.checklist-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const box = item.querySelector('.checklist-checkbox');
+          if (box) box.classList.toggle('checked');
+        });
+      });
+
+      const btnBeliSekarang = document.getElementById('btnBeliSekarang');
+      if (btnBeliSekarang) {
+        btnBeliSekarang.addEventListener('click', () => {
+          showToast('Pesanan diteruskan ke checkout!');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

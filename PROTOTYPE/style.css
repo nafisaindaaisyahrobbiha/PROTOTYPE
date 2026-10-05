@@ -1,0 +1,944 @@
+/* ==========================================================================
+   LITTLESEED PLANTS - WIREFRAME PROTOTYPE CSS
+   Dibuat berdasarkan 5 Gambar Wireframe Mobile UI
+   ========================================================================== */
+
+/* Import font modern sans & monospace */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Mono', 'Courier New', Courier, monospace;
+  
+  --bg-page: #f6f5f0;
+  --bg-device: #ffffff;
+  --text-main: #111111;
+  --text-muted: #555555;
+  --border-dark: #111111;
+  --border-light: #cccccc;
+  --border-dashed: #888888;
+  --tag-active: #e2e8e0;
+  --shadow-device: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 60px;
+}
+
+/* ==========================================================================
+   SCREEN CONTROLLER / SWITCHER (Untuk memudahkan preview 5 halaman)
+   ========================================================================== */
+.preview-header {
+  text-align: center;
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+
+.preview-title {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.preview-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.screen-switcher-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.screen-switch-btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  background: #ffffff;
+  border: 1.5px solid var(--border-dark);
+  color: var(--text-main);
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.screen-switch-btn:hover {
+  background: #f0f0f0;
+}
+
+.screen-switch-btn.active {
+  background: var(--text-main);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   MOBILE DEVICE FRAME WRAPPER
+   ========================================================================== */
+.device-container {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--bg-device);
+  border: 2px solid var(--border-dark);
+  border-radius: 12px;
+  box-shadow: var(--shadow-device);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 780px;
+  overflow: hidden;
+}
+
+/* Screen visibility state */
+.screen-view {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  padding-bottom: 74px; /* Ruang untuk bottom nav */
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.screen-view.active-screen {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   COMMON WIREFRAME COMPONENTS
+   ========================================================================== */
+/* Header standar wireframe */
+.wire-header {
+  padding: 16px 18px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid var(--border-dark);
+}
+
+.wire-header-title {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.2px;
+}
+
+.wire-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  border: 1.5px solid var(--border-dark);
+  padding: 2px 8px;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.wire-badge-stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wire-icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--border-dark);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.wire-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Wireframe Content Body */
+.wire-body {
+  padding: 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+/* Kotak Gambar Wireframe (Placeholder Box dengan Garis Diagonal X) */
+.wire-image-box {
+  width: 100%;
+  border: 1.5px solid var(--border-dark);
+  background: #ffffff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Garis diagonal X menggunakan background SVG linear */
+.wire-image-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to top right, transparent calc(50% - 0.75px), #b5b5b5 calc(50% - 0.75px), #b5b5b5 calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+    linear-gradient(to bottom right, transparent calc(50% - 0.75px), #b5b5b5 calc(50% - 0.75px), #b5b5b5 calc(50% + 0.75px), transparent calc(50% + 0.75px));
+  pointer-events: none;
+}
+
+.wire-image-tag {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  border: 1.2px solid var(--border-dark);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  text-align: center;
+}
+
+/* Tombol CTA Hitam Penuh */
+.wire-btn-cta {
+  width: 100%;
+  background: var(--border-dark);
+  color: #ffffff;
+  border: 1.5px solid var(--border-dark);
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+  margin-top: auto;
+}
+
+.wire-btn-cta:hover {
+  opacity: 0.92;
+}
+
+.wire-btn-cta:active {
+  transform: scale(0.99);
+}
+
+/* Tombol Option (Outline vs Hitam Terpilih) */
+.wire-option-btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 10px 8px;
+  background: #ffffff;
+  color: var(--text-main);
+  border: 1.5px solid var(--border-dark);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+}
+
+.wire-option-btn:hover {
+  background: #f7f7f7;
+}
+
+.wire-option-btn.selected {
+  background: var(--border-dark);
+  color: #ffffff;
+}
+
+/* Divider garis */
+.wire-divider {
+  height: 1.5px;
+  background: var(--border-dark);
+  width: 100%;
+  border: none;
+}
+
+.wire-divider-dotted {
+  border: none;
+  border-top: 1.5px dashed #888888;
+  height: 1px;
+  width: 100%;
+}
+
+/* ==========================================================================
+   SCREEN 1: KUIS KONDISI RUMAH
+   ========================================================================== */
+.quiz-info-card {
+  border: 1.5px dashed var(--border-dashed);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quiz-step-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.quiz-main-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.quiz-description {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.quiz-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.quiz-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.quiz-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* ==========================================================================
+   SCREEN 2: KATALOG TANAMAN
+   ========================================================================== */
+.catalog-brand {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.catalog-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.search-box {
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-dark);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  outline: none;
+  background: #ffffff;
+}
+
+.search-input:focus {
+  background: #fafafa;
+}
+
+.filter-tags-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.filter-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 6px 14px;
+  border: 1.5px solid #999999;
+  background: #ffffff;
+  color: var(--text-main);
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.filter-tag.active {
+  background: var(--tag-active);
+  border-color: var(--border-dark);
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.catalog-card {
+  border: 1.5px solid #aaaaaa;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.catalog-card .wire-image-box {
+  height: 120px;
+}
+
+.catalog-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.catalog-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eeeeee;
+  padding-top: 6px;
+}
+
+.catalog-card-score {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.catalog-card-btn {
+  width: 24px;
+  height: 24px;
+  border: 1.2px solid var(--border-dark);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.catalog-card-btn:hover {
+  background: #000000;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   SCREEN 3: FILTER RUANGAN
+   ========================================================================== */
+.location-filter-header {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.location-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.location-tab-btn {
+  padding: 8px 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #ffffff;
+  border: 1.5px solid var(--border-dark);
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.location-tab-btn.selected {
+  background: var(--border-dark);
+  color: #ffffff;
+}
+
+.selection-info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1.5px solid var(--border-dark);
+  padding-bottom: 6px;
+  margin-top: 6px;
+}
+
+.selection-info-title {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.selection-info-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.room-plant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.room-plant-card {
+  border: 1.5px solid var(--border-dark);
+  padding: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.room-plant-img {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+}
+
+.room-plant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.room-plant-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.room-plant-tags {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.room-plant-divider {
+  height: 1px;
+  background: #222222;
+  margin: 3px 0;
+}
+
+.room-plant-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.room-plant-price {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.room-plant-select-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  background: #ffffff;
+  border: 1.2px solid var(--border-dark);
+  cursor: pointer;
+}
+
+.room-plant-select-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* ==========================================================================
+   SCREEN 4: MODE TAMPILAN
+   ========================================================================== */
+.top-action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px 8px;
+}
+
+.brand-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-main {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.top-icons-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.icon-btn-ghost {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+}
+
+.icon-btn-ghost svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mode-sec-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.mode-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.mode-desc {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.mode-toggle-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.specimen-card-box {
+  border: 1.5px solid var(--border-dark);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.specimen-img-large {
+  width: 100%;
+  height: 130px;
+}
+
+.specimen-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.specimen-name-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.specimen-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.specimen-latin {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.specimen-badge-match {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1.2px solid var(--border-dark);
+  padding: 3px 6px;
+}
+
+.specimen-attribute-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.specimen-attr-row {
+  border: 1.2px solid var(--border-dark);
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.specimen-attr-key {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.specimen-attr-val {
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   SCREEN 5: PANDUAN PERAWATAN
+   ========================================================================== */
+.guide-main-img {
+  width: 100%;
+  height: 220px;
+}
+
+.guide-plant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guide-name-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.guide-plant-name {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.guide-plant-price {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.guide-plant-category {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.guide-difficulty-box {
+  border: 1.5px solid var(--border-dark);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.difficulty-val {
+  font-weight: 800;
+}
+
+.guide-checklist-box {
+  border: 1.5px solid var(--border-dark);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checklist-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-main);
+  line-height: 1.35;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checklist-checkbox {
+  width: 14px;
+  height: 14px;
+  border: 1.2px solid var(--border-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  background: #ffffff;
+}
+
+.checklist-checkbox.checked::after {
+  content: '✓';
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   BOTTOM NAVIGATION BAR (STANDAR 5 TAB)
+   ========================================================================== */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: #ffffff;
+  border-top: 1.5px solid var(--border-dark);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  z-index: 10;
+}
+
+.nav-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 4px;
+  position: relative;
+  text-decoration: none;
+}
+
+.nav-tab-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-tab-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-main);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.nav-tab-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Active Nav States */
+.nav-tab-item.active {
+  font-weight: 800;
+}
+
+.nav-tab-item.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 3px;
+  background: var(--border-dark);
+}
+
+/* Screen 1 specific wireframe nav styling alternative (inverted block) */
+.nav-tab-item.inverted-active {
+  background: var(--border-dark);
+  color: #ffffff;
+}
+
+.nav-tab-item.inverted-active .nav-tab-icon svg {
+  stroke: #ffffff;
+}
+
+/* ==========================================================================
+   RESPONSIVE STYLING
+   ========================================================================== */
+@media (max-width: 480px) {
+  body {
+    padding: 10px 0;
+    background-color: #ffffff;
+  }
+  
+  .preview-header {
+    padding: 0 12px;
+  }
+  
+  .device-container {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 100%;
+  }
+}
